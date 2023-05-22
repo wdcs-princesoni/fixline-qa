@@ -1,3 +1,4 @@
+import os
 import time
 
 from selenium.webdriver import ActionChains
@@ -28,26 +29,29 @@ class CreateBet:
         self.mm = MetaMask(self.driver)
 
     def create_custom_bet(self, que, a_one, a_two):
-        self.driver = webdriver.Chrome()
-        plus = self.driver.find_element(*CreateBet.btn_create_bet)  # Performed click action through Actionchains.
-        ActionChains(driver=self.driver).click(plus).perform()
-        self.driver.find_element(*CreateBet.btn_custom_bet).click()
-        self.driver.find_element(*CreateBet.txt_question).send_keys(que)
-        self.driver.find_element(*CreateBet.txt_ans_one).send_keys(a_one)
-        self.driver.find_element(*CreateBet.txt_ans_two).send_keys(a_two)
-        category = self.driver.find_elements(*CreateBet.rd_category)
-        category[(random.randint(0, 2))].click()
-        picture = self.driver.find_elements(*CreateBet.rd_picture_on_card)
-        picture[(random.randint(0, 2))].click()
-        self.driver.find_element(*CreateBet.btn_next).click()
-        self.driver.find_element(*CreateBet.btn_confirm_matic).click()
-        self.mm.confirm_transaction()
-        success = self.wait.until(EC.visibility_of_element_located((By.XPATH, "//div[@data-testid='toast-content']")))
-        if success.is_displayed():
-            self.wait.until(EC.invisibility_of_element_located((By.XPATH, "//div[@data-testid='toast-content']")))
-            assert True
-            self.driver.quit()
-        else:
-            self.driver.save
-            assert False
-            self.driver.quit()
+        # self.driver = webdriver.Chrome()
+       try:
+            time.sleep(3)
+            plus = self.wait.until(EC.visibility_of_element_located((By.XPATH, "//button[@title='Create a Bet']")))#find_element(*CreateBet.btn_create_bet)  # Performed click action through Actionchains.
+            ActionChains(driver=self.driver).click(plus).perform()
+            self.driver.find_element(*CreateBet.btn_custom_bet).click()
+            self.driver.find_element(*CreateBet.txt_question).send_keys(que)
+            self.driver.find_element(*CreateBet.txt_ans_one).send_keys(a_one)
+            self.driver.find_element(*CreateBet.txt_ans_two).send_keys(a_two)
+            category = self.driver.find_elements(*CreateBet.rd_category)
+            category[(random.randint(0, 2))].click()
+            picture = self.driver.find_elements(*CreateBet.rd_picture_on_card)
+            picture[(random.randint(0, 2))].click()
+            self.driver.find_element(*CreateBet.btn_next).click()
+            self.driver.find_element(*CreateBet.btn_confirm_matic).click()
+            self.mm.confirm_transaction()
+            success = self.wait.until(EC.visibility_of_element_located((By.XPATH, "//div[@data-testid='toast-content']")))
+            if success.is_displayed():
+                self.wait.until(EC.invisibility_of_element_located((By.XPATH, "//div[@data-testid='toast-content']")))
+                self.driver.quit()
+                return True
+            else:
+                self.driver.quit()
+                return False
+       except:
+           return False
